@@ -49,7 +49,7 @@ function ackButton(id) {
   btn.className = 'ack';
   btn.dataset.testid = 'ack';
   btn.textContent = 'Ack';
-  btn.addEventListener('click', () => onAck(id));
+  btn.addEventListener('click', () => askToAck(id));
   return btn;
 }
 
@@ -122,6 +122,37 @@ function render(incidents) {
   }
   list.hidden = sorted.length === 0;
 }
+
+// Ack asks first. The dialog names the incident the click landed on, so a
+// list that shifted under the pointer shows up before anything is sent.
+const dialog = $('confirm');
+const confirmAck = $('confirm-ack');
+let asking = null;
+
+function askToAck(id) {
+  if (pending.has(id) || acked.has(id)) return;
+  const row = list.querySelector(`[data-id="${CSS.escape(id)}"]`);
+  asking = id;
+  $('confirm-title').textContent = `Ack ${id}?`;
+  $('confirm-detail').textContent = row ? row.querySelector('.what').textContent : '';
+  confirmAck.textContent = `Ack ${id}`;
+  if (!dialog.open) dialog.showModal();
+  $('confirm-cancel').focus(); // a stray Enter cancels, it does not ack
+}
+
+confirmAck.addEventListener('click', () => {
+  const id = asking;
+  asking = null;
+  dialog.close();
+  if (id) onAck(id);
+});
+$('confirm-cancel').addEventListener('click', () => {
+  asking = null;
+  dialog.close();
+});
+dialog.addEventListener('cancel', () => {
+  asking = null; // Esc
+});
 
 async function onAck(id) {
   if (pending.has(id) || acked.has(id)) return;

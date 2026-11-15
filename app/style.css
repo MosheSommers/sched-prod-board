@@ -19,3 +19,9 @@ footer { color: #777; font-size: 13px; }
 .acked { color: #1b6e2d; font-weight: 600; }
 .row:has(.acked) { background: #f1f8f2; }
 [hidden] { display: none !important; }
+.confirm { border: 1px solid #1d1d1f; border-radius: 10px; padding: 20px 24px; max-width: 420px; font: inherit; }
+.confirm::backdrop { background: rgba(0, 0, 0, .35); }
+.confirm h2 { margin: 0 0 6px; font-size: 18px; }
+.confirm .detail { margin: 0 0 16px; color: #555; }
+.confirm .buttons { display: flex; justify-content: flex-end; gap: 8px; }
+.confirm .cancel { min-height: 32px; padding: 0 14px; border: 1px solid #999; border-radius: 6px; background: #fff; font: inherit; cursor: pointer; }
