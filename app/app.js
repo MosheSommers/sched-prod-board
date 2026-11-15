@@ -37,6 +37,12 @@ function ackedMark(receipt) {
   return el;
 }
 
+// The first characters of the receipt show on screen, so a recording of
+// the board can be matched to the receipt the API sealed.
+function receiptNote(receipt) {
+  return span('receipt', `receipt ${receipt.slice(0, 10)}…`);
+}
+
 function ackButton(id) {
   const btn = document.createElement('button');
   btn.type = 'button';
@@ -71,7 +77,9 @@ function paintAction(row) {
   const action = row.querySelector('.action');
   const id = row.dataset.id;
   action.replaceChildren(
-    acked.has(id) ? ackedMark(acked.get(id)) : ackButton(id),
+    ...(acked.has(id)
+      ? [ackedMark(acked.get(id)), receiptNote(acked.get(id))]
+      : [ackButton(id)]),
   );
   const btn = action.querySelector('button');
   if (btn) btn.disabled = pending.has(id);
